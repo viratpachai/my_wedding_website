@@ -1052,17 +1052,22 @@ function sendWish() {
 
         // --- FIXED SHARING LOGIC ---
         function shareInvite() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Pachaiyappan & Saranya Wedding',
-                    text: 'You are cordially invited to our wedding celebration!',
-                    url: window.location.href
-                }).catch(console.error);
-            } else {
-                // Fallback for desktop browsers
-                alert("Please copy and share this link: " + window.location.href);
-            }
-        }
+    const shareText = `✨ அவளும் நானும் 🫶🏻 ✨\n\n` +
+    `Some stories are written in the stars, but ours is just beginning.\n\n` +
+    `We, Pachaiyappan & Saranya, are delighted to invite you to our wedding celebration.\n\n` +
+    `Simply click the link below to checkout our wedding website for details and surprises! 🏛️ 🌹\n\n` +
+    `📜 TAP HERE TO OPEN:`;
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'Pachaiyappan & Saranya Wedding',
+            text: shareText,
+            url: window.location.href
+        }).catch(console.error);
+    } else {
+        alert("Invitation copied! You can now paste and share it on WhatsApp.");
+    }
+}
 function unfold() {
     const mainBox = document.getElementById('mainBox');
     const boxWrap = document.getElementById('box-wrapper');

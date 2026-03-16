@@ -475,8 +475,7 @@ const countdownTimer = setInterval(function() {
             <span style="margin-right: 8px;">📲</span> SHARE VIA WHATSAPP
         </button>
     </div>
-</div>
-     
+    
 <div class="calendar-section-wrapper reveal-on-scroll">
     <p style="letter-spacing: 5px; font-family: 'Montserrat'; font-size: 0.7rem; color: var(--rose-gold); margin-bottom: 20px;">SAVE THE DATE</p>
     
@@ -489,6 +488,10 @@ const countdownTimer = setInterval(function() {
         </p>
     </div>
 </div>
+    
+</div>
+     
+
 
 <div id="cal-modal-overlay" onclick="toggleCalModal()">
     <div class="cal-modal-card" onclick="event.stopPropagation()">
@@ -724,18 +727,11 @@ function syncApple() {
             With Love, <br>
             <span class="names-sig">Pachaiyappan & Saranya</span>
         </div>
-        
-  
-    
     </div>
     
+    <div class="divider-gold" style="margin-top: 50px;"></div>
 </div>
-    
-<div class="divider-gold" style="margin-top: 50px;"></<div class="event-card" style="margin-top: 60px;">
-    <h3 style="letter-spacing: 4px; color: var(--rose-gold); font-size: 0.7rem; margin-bottom: 10px; text-align: center;">DIGITAL INVITATION</h3>
-    <p style="font-size: 0.8rem; margin-bottom: 20px; text-align: center;">Save a copy of our invitation to your gallery.</p>
-    <button onclick="saveInvitation()" class="btn-gold">SAVE TO GALLERY</button>
-</div>  
+
 
 <style>
 .ending-quote-container {
@@ -971,6 +967,11 @@ function sendWish() {
 }
 </script>
     
+<div class="event-card" style="margin-top: 60px;">
+    <h3 style="letter-spacing: 4px; color: var(--rose-gold); font-size: 0.7rem; margin-bottom: 10px; text-align: center;">DIGITAL INVITATION</h3>
+    <p style="font-size: 0.8rem; margin-bottom: 20px; text-align: center;">Save a copy of our invitation to your gallery.</p>
+    <button onclick="saveInvitation()" class="btn-gold">SAVE TO GALLERY</button>
+</div>
 
 <style>
   
@@ -1055,11 +1056,11 @@ function sendWish() {
         // --- FIXED SHARING LOGIC ---
         function shareInvite() {
     const shareText = `✨ அவளும் நானும் 🫶🏻 ✨\n\n` +
-    `Some stories are written in the stars, but ours is just beginning.\n\n` +
-    `We, Pachaiyappan & Saranya, are delighted to invite you to our wedding celebration.\n\n` +
-    `Simply click the link below to checkout our wedding website for details and surprises! 🏛️ 🌹\n\n` +
-    `📜 TAP HERE TO OPEN:`;
-
+        `Some stories are written in the stars, but ours is just beginning.\n\n` +
+        `We, Pachaiyappan & Saranya, are delighted to invite you to our wedding celebration.\n\n` +
+        `Simply click the link below to checkout our wedding website for details and surprises! 🏛️ 🌹\n\n` +
+        `📜 TAP HERE TO OPEN:`;
+    
     if (navigator.share) {
         navigator.share({
             title: 'Pachaiyappan & Saranya Wedding',
@@ -1113,51 +1114,47 @@ function unfold() {
 async function saveInvitation() {
     const btn = event.currentTarget;
     const originalText = btn.innerText;
-    btn.innerText = "GENERATING...";
+    
+    // Path to your actual image file
+    const imagePath = '/518FCD5E-E803-400C-8292-8F63ED78E752.jpeg';
+    
+    // Get guest name for a personalized filename, or default to "Invitation"
+    const guestName = document.getElementById('guestName')?.innerText.trim() || "Guest";
+    const fileName = `Wedding_Invite_${guestName}.png`;
+    
+    btn.innerText = "DOWNLOADING...";
     btn.disabled = true;
     
-    // Use the main container to capture the names and dates
-    const element = document.getElementById('main-content');
-    
     try {
-        const canvas = await html2canvas(element, {
-            backgroundColor: "#FDF5E6",
-            scale: 3, // Higher quality for printing
-            useCORS: true,
-            allowTaint: true,
-            letterRendering: true
-        });
+        const response = await fetch(imagePath);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
         
-        const image = canvas.toDataURL("image/png", 1.0);
-        const guestName = document.getElementById('guestName')?.innerText || "Guest";
-        const fileName = `Wedding_Invite_${guestName}.png`;
-        
-        // Direct Download Trigger
         const link = document.createElement('a');
-        link.style.display = 'none';
-        link.href = image;
+        link.href = url;
         link.download = fileName;
+        
         document.body.appendChild(link);
         link.click();
         
         // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        btn.innerText = "SAVED!";
         setTimeout(() => {
-            document.body.removeChild(link);
             btn.innerText = originalText;
             btn.disabled = false;
-        }, 1000);
+        }, 2000);
         
     } catch (err) {
-        console.error("Capture failed:", err);
-        btn.innerText = "TAP TO SAVE AGAIN";
+        console.error("Download failed:", err);
+        // Fallback: Try opening in a new tab if fetch fails
+        window.open(imagePath, '_blank');
+        btn.innerText = "TAP TO VIEW";
         btn.disabled = false;
     }
 }
-
-html2canvas(element, {
-    useCORS: true,
-    allowTaint: true
-})
 
     </script>
 </body>
